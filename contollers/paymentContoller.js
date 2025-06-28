@@ -2,8 +2,6 @@ const Order = require('../models/orderSchema');
 const Cart = require('../models/cartSchema');
 const Product = require('../models/productSchema');
 const asyncErrorHandler = require('../utils/asyncErrorHandler');
-const Flutterwave = require('flutterwave-node-v3');
-const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
 const { sendOrderConfirmation } = require('../utils/sendEmail');
 const { generateInvoiceBuffer } = require('../utils/generateInvoice');
 const cloudinary = require('../config/cloudinary');
@@ -12,6 +10,13 @@ const { generateOrderFromCart } = require('../utils/order.utils');
 
 
 exports.initBankTransfer = asyncErrorHandler(async (req, res) => {
+    if (!process.env.FLW_PUBLIC_KEY || !process.env.FLW_SECRET_KEY) {
+    return res.status(503).json({ error: 'Payment gateway not configured' });
+  }
+
+  const Flutterwave = require('flutterwave-node-v3');
+  const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
+
   const userId = req.user._id;
   const { shippingAddress } = req.body;
 
