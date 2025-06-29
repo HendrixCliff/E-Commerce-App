@@ -92,15 +92,6 @@ exports.login = async (req, res, next) => {
 };
 
     
-exports.protect = (req, res, next) => {
-  if (req.isAuthenticated && req.isAuthenticated()) {
-    console.log("✅ Authenticated user:", req.user); // <-- Add this
-    return next();
-  }
-
-  console.log("❌ Unauthorized request");
-  return res.status(401).json({ message: "Unauthorized" });
-};
 
 
 exports.restrict = (role) => {
@@ -121,7 +112,7 @@ exports.restrict = (role) => {
      const resetToken = user.createResetPasswordToken();
     await user.save({ validateBeforeSave: false });
 
-    const frontendBaseUrl = 'https://coffee-bean-dev-inventory.vercel.app';
+    const frontendBaseUrl = 'http://localhost:5173';
     const resetUrl = `${frontendBaseUrl}/reset-password/${resetToken}`;
 
       try {
