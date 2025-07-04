@@ -75,10 +75,21 @@ exports.getAllSections = asyncErrorHandler(async (req, res) => {
 });
 
 exports.getSectionByKey = asyncErrorHandler(async (req, res) => {
-  const section = await Section.findOne({ key: req.params.key });
-  if (!section) return res.status(404).json({ error: 'Section not found' });
-  res.json(section);
+  const { key } = req.body;
+
+  if (!key) {
+    return res.status(400).json({ error: 'Key is required in request body.' });
+  }
+
+  const section = await Section.findOne({ key });
+
+  if (!section) {
+    return res.status(404).json({ error: `Section '${key}' not found.` });
+  }
+
+  res.status(200).json(section);
 });
+
 
 exports.deleteSection = asyncErrorHandler(async (req, res) => {
   await Section.findOneAndDelete({ key: req.params.key });

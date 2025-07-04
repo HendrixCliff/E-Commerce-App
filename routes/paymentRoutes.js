@@ -5,6 +5,6 @@ const isAuth = require('../middleware/isAuth');
 const router = express.Router();
 
 router.post('/bank-transfer', isAuth, initBankTransfer);
-router.post('/webhook', webhookHandler);
+router.post('/webhook', express.raw({ type: '*/*' }), webhookHandler);
 
 module.exports = router;
